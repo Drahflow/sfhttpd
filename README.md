@@ -2,7 +2,7 @@ Problem
 =======
 
 * You need a static file served as fast as the network can manage.
-* Your box sucks, for example because it's the cheap virtual host you could find.
+* Your box sucks, for example because it's the cheapest virtual host you could find.
 
 Solution
 ========
