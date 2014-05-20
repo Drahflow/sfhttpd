@@ -26,20 +26,15 @@ struct thread {
 struct thread threads[THREADS];
 int sockfd;
 char *path;
+int contentfd;
 
 #define info (*((struct thread *) data))
 
 int thr(void *data) {
-  int dfd;
   off_t zero;
   char req[4096];
   int len;
   char *nlnl;
-
-  if((dfd = open(path, O_RDONLY)) < 0) {
-    fprintf(stderr, "could not open path to serve\n");
-    exit(1);
-  }
 
   while (1) {
     info.fd = accept(sockfd, NULL, NULL);
@@ -56,7 +51,7 @@ int thr(void *data) {
     req_complete:
 
     zero = 0;
-    sendfile(info.fd, dfd, &zero, FILESIZE);
+    sendfile(info.fd, contentfd, &zero, FILESIZE);
     shutdown(info.fd, SHUT_WR);
     close(info.fd);
   }
@@ -74,6 +69,11 @@ int main(int argc, char *argv[]) {
   char *stack;
   int yes = 1;
   int port;
+
+  if((contentfd = open(path, O_RDONLY)) < 0) {
+    fprintf(stderr, "could not open path to serve\n");
+    exit(1);
+  }
 
   if(setuid(65535) < 0) {
     fprintf(stderr, "setuid failed\n");
