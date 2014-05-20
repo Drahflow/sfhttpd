@@ -71,7 +71,7 @@ void term(int no_use)
 
 int main(int argc, char *argv[])
 {
-	struct sockaddr_in http_addr;
+	struct sockaddr_in6 http_addr;
 	int nt;
 	char *stack;
 	int yes = 1;
@@ -94,11 +94,11 @@ int main(int argc, char *argv[])
 
         path = argv[2];
 
-	http_addr.sin_family = AF_INET;
-	http_addr.sin_port = htons(port);
-	http_addr.sin_addr.s_addr = INADDR_ANY;
+	http_addr.sin6_family = AF_INET6;
+	http_addr.sin6_port = htons(port);
+	memcpy(&http_addr.sin6_addr.s6_addr, &in6addr_any, 16);
 	
-	if ((sockfd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
+	if ((sockfd = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP)) < 0) {
 		fprintf(stderr, "could not create socket\n");
 		return 1;
 	}
